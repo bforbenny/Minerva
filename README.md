@@ -68,7 +68,7 @@ Any additional scripts, programs and other expecutable files in `./IncludeOtherS
 
 # Installation and Configuration
 
-For installation and configuration procedure, refer to [wiki](wiki/)
+For installation and configuration procedure, refer to [wiki](../../wiki/)
 
 ## Configuration
 
