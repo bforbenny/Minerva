@@ -70,29 +70,6 @@ Any additional scripts, programs and other expecutable files in `./IncludeOtherS
 
 For installation and configuration procedure, refer to [wiki](../../wiki/)
 
-## Configuration
-
-Edit some lines in `settings.ini` to configure the program
-
-### Main Settings
-
-Feature can be enabled by editing `[General]` section of `[settings.ini]` file.
-
-List of available features
-| Name | Description |
-| --- | --- |
-| PowerToys | If installed and running, click to use PowerToys shortcuts |
-| CollectStatistics | Log amount of time saved in AmountUsed.csv |
-
-### Hotkeys
-
-The hotkeys can be changed by editing `[HotKeys]` section of `settings.ini` file.
-
-This is a list of available shortcuts
-| Name | Description |
-|------|-------------|
-| OpenMinervaMenu | Open the menu of this project |
-| ReloadProgram | Reload this project |
 
 ## TODO
 
