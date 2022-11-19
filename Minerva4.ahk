@@ -19,12 +19,14 @@
 ;----------------------------------------------| VARIABLES |---------------------------------------------;
 FileEncoding, UTF-8
 global ScriptName  := StrReplace(A_ScriptName, ".ahk")
-global Version     := "4.0.1"
+global Version     := "4.0.0"
 global GitHub      := "https://github.com/bforbenny/Minerva"
 global items	   := 0
 global MyProgress  := 0
 global TotalWords  := 0
 global enPowerToys := 0
+global settingsINI := "settings.ini"
+global ignoreFiles := ""
 
 ; comment if Gdip.ahk is in your standard library
 #Include, includes\Gdip.ahk 			
@@ -36,11 +38,11 @@ global enPowerToys := 0
 
 
 ; Read settings.ini file
-ReadIni("settings.ini")
+ReadIni(settingsINI)
 
-setUpHotkey(HotKeys_OpenMinervaMenu, "showMinervaMenu", "settings.ini: [HotKeys]OpenMinervaMenu")
-setUpHotkey(HotKeys_ReloadProgram,   "ReloadProgram",   "settings.ini: [HotKeys]ReloadProgram")
-
+setUpHotkey(HotKeys_OpenMinervaMenu, "showMinervaMenu", "%settingsINI% [HotKeys]OpenMinervaMenu")
+setUpHotkey(HotKeys_ReloadProgram,   "ReloadProgram",   "%settingsINI% [HotKeys]ReloadProgram")
+ignoreFiles := General_IgnoreFiles
 
 ; Change tray icon from default
 Menu, Tray, Icon, %A_ScriptDir%\icon\icon.ico
@@ -190,20 +192,25 @@ LoopOverFolder(PATH)
 	{
 		; Add To Menu
 		SplitPath, element, name, dir, ext, name_no_ext, drive
-		Menu, %dir%, Add, %name%, MenuEventHandler
-		
-		switch ext{
-			case "ahk":
-				Menu, %dir%, Icon, %name%, %A_ScriptDir%\Icon\ahk-logo.jpg
 
-			case "bat":
-				Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 3
-				
-			case "exe":
-				Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 3
+		vaar := InStr(ignoreFiles, name , 0 )
+		if InStr(ignoreFiles, name , 0 ) = 0{
+			Menu, %dir%, Add, %name%, MenuEventHandler
+			
+			switch ext{
+				case "ahk":
+					Menu, %dir%, Icon, %name%, %A_ScriptDir%\Icon\ahk-logo.jpg
 
-			default:
-				Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 1
+				case "bat":
+					Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 3
+					
+				case "exe":
+					Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 3
+
+				default:
+					Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 1
+			}
+
 		}
 		
 		; Iterate GUI loading
