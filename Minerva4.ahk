@@ -125,7 +125,7 @@ PrepareMenu(PATH)
 	}
 
 	; Add Admin Panel
-	Menu, %PATH%"\Admin", Add, &1 Restart, ReloadProgram				; Add Reload option
+	Menu, %PATH%"\Admin", Add, &1 Reload, ReloadProgram				; Add Reload option
 	Menu, %PATH%"\Admin", Add, &2 Exit, ExitApp							; Add Exit option
 	Menu, %PATH%"\Admin", Add, &3 Go to Parent Folder, GoToRootFolder	; Open script folder
 	Menu, %PATH%"\Admin", Add, &4 Add Custom Item, GoToCustomFolder		; Open custom folder

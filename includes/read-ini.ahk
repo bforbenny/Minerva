@@ -15,12 +15,12 @@ Local s, c, p, key, k
 	Loop, Parse, s, `n`r, %A_Space%%A_Tab%
 	{
 		c := SubStr(A_LoopField, 1, 1)
-		if (c="[")
+		if (c="[")											; Section Header
 			key := SubStr(A_LoopField, 2, -1)
-		else if (c=";")
+		else if (c=";")										; Comments
 			continue
 		else {
-			p := InStr(A_LoopField, "=")
+			p := InStr(A_LoopField, "=")						; = position
 			if p {
 				k := SubStr(A_LoopField, 1, p-1)
 				%key%_%k% := SubStr(A_LoopField, p+1)
