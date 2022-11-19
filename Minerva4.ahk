@@ -306,6 +306,9 @@ DeleteGraphics:
 ; Amountfile is a .csv that the user can use to see how much info was saved. 
 AddAmountFile(FileName, WordCount)
 {
+	if !General_CollectStatistics
+		return
+
 	; Average Typing speed is 40 wpm pr. https://www.typingpal.com/en/typing-test
 	MinutesSaved := WordCount / 40
 	
