@@ -11,38 +11,7 @@ Minerva uses a hotkey combination, `Ctrl + RightShift` to bring up a GUI menu, f
 
 The GUI menu will be autopopulated with text and folders from the folder that Minerva lives in.
 
-## Prerequisites
 
-- Be on a Windows Computer
-- [Autohotkey](https://www.autohotkey.com/) must be installed with atleast version 1.1.31.00
-
-## Installation
-
-Download this _entire_ repository and open Minerva.ahk with AutoHotkey.
-
-## Configuration
-
-Edit some lines in `settings.ini` to configure the program
-
-### Main Settings
-
-Feature can be enabled by editing `[General]` section of `[settings.ini]` file.
-
-List of available features
-| Name | Description |
-| --- | --- |
-| PowerToys | If installed and running, click to use PowerToys shortcuts |
-| CollectStatistics | Log amount of time saved in AmountUsed.csv |
-
-### Hotkeys
-
-The hotkeys can be changed by editing `[HotKeys]` section of `settings.ini` file.
-
-This is a list of available shortcuts
-| Name | Description |
-|------|-------------|
-| OpenMinervaMenu | Open the menu of this project |
-| ReloadProgram | Reload this project |
 
 ## Usage
 
@@ -87,16 +56,6 @@ A folder structure like this ...
 
 When you have written your `.rtf` files reload Minerva either by using the admin panel or by killing the process and reopening it.
 
-## Starting Minerva on Windows startup
-
-Standing in the directory that Minerva lays in:
-
-1. rightclick the .exe (or .ahk, if you would rather use that) file
-2. `Create shortcut` and cut it
-3. press `win + r` and write `shell:startup`
-4. Paste the shortcut from before
-5. Reboot to confirm
-
 ## Launch Additional scripts on Minerva startup
 
 Any additional scripts, programs and other expecutable files in `./IncludeOtherScripts` will be launched when Minerva opens.
@@ -107,6 +66,36 @@ Any additional scripts, programs and other expecutable files in `./IncludeOtherS
 - Thanks to Taric Porter for his amazing [GDI+ library](https://github.com/tariqporter/Gdip/blob/master/Gdip.ahk) for autohotkey
 - Thanks to [Read .INI file in one go!](https://www.autohotkey.com/board/topic/33506-read-ini-file-in-one-go/) for the ini-parsing-script
 
+# Installation and Configuration
+
+For installation and configuration procedure, refer to [wiki](wiki/)
+
+## Configuration
+
+Edit some lines in `settings.ini` to configure the program
+
+### Main Settings
+
+Feature can be enabled by editing `[General]` section of `[settings.ini]` file.
+
+List of available features
+| Name | Description |
+| --- | --- |
+| PowerToys | If installed and running, click to use PowerToys shortcuts |
+| CollectStatistics | Log amount of time saved in AmountUsed.csv |
+
+### Hotkeys
+
+The hotkeys can be changed by editing `[HotKeys]` section of `settings.ini` file.
+
+This is a list of available shortcuts
+| Name | Description |
+|------|-------------|
+| OpenMinervaMenu | Open the menu of this project |
+| ReloadProgram | Reload this project |
+
 ## TODO
 
 - Performance optimize
+- Auto-Update (setting + downloader) Minerva
+
