@@ -32,6 +32,7 @@ List of available features
 | Name | Description |
 | --- | --- |
 | PowerToys | If installed and running, click to use PowerToys shortcuts |
+| CollectStatistics | Log amount of time saved in AmountUsed.csv |
 
 ### Hotkeys
 
