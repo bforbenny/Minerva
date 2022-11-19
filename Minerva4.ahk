@@ -10,7 +10,7 @@
    Name ...........: Minerva
    Description ....: Will generate a context menu from which to insert text, launch shortcuts and much more
    AHK Version ....: AHK_L 1.1.33.10 (Unicode 32-bit) - 28-12-2021
-   Platform .......: Tested on Windows 10
+   Platform .......: Tested on Windows 11 22H2
    Language .......: English (en-US)
    Author .........: Jonas Vollhaase Mikkelsen <Mikkelsen.v.jonas@gmail.com>
    Documentation ..: Github.com
@@ -18,14 +18,28 @@
 
 ;----------------------------------------------| VARIABLES |---------------------------------------------;
 FileEncoding, UTF-8
-global ScriptName := "Minerva"
-global Version    := "4.0"
-global items	  := 0
-global MyProgress := 0
-Global TotalWords := 0
+global ScriptName  := StrReplace(A_ScriptName, ".ahk")
+global Version     := "4.0.1"
+global GitHub      := "https://github.com/bforbenny/Minerva"
+global items	   := 0
+global MyProgress  := 0
+global TotalWords  := 0
+global enPowerToys := 0
 
 ; comment if Gdip.ahk is in your standard library
-#Include, LoadingGraphics\Gdip.ahk 				
+#Include, includes\Gdip.ahk 			
+#Include, includes\read-ini.ahk	
+#Include, includes\JXON.ahk
+#Include, includes\Minerva-PowerToys.ahk
+#Include, includes\Minerva-Handlers.ahk
+
+
+; Read settings.ini file
+ReadIni("settings.ini")
+
+setUpHotkey(HotKeys_OpenMinervaMenu, "showMinervaMenu", "settings.ini: [HotKeys]OpenMinervaMenu")
+setUpHotkey(HotKeys_ReloadProgram,   "ReloadProgram",   "settings.ini: [HotKeys]ReloadProgram")
+
 
 ; Change tray icon from default
 Menu, Tray, Icon, %A_ScriptDir%\icon\icon.ico
@@ -63,7 +77,7 @@ pBrush 	:= Gdip_BrushCreateSolid(0x80C7C7C7)
 Gdip_FillRectangle(G, pBrush, 0, 0, A_ScreenWidth, A_ScreenHeight)
 
 ; Create Hourglass image and draw it onto screen
-pBitmap := Gdip_CreateBitmapFromFile("LoadingGraphics\Hourglass.png")
+pBitmap := Gdip_CreateBitmapFromFile("Icon\Hourglass.png")
 Gdip_DrawImage(G, pBitmap, A_ScreenWidth/2 - 128, A_ScreenHeight/2 - 128, Width/2, Height/2, 0, 0, Width, Height)
 
 ; Graphic has at this point been drawn, but view is not yet updated. Waiting to update view until script is called
@@ -82,16 +96,34 @@ PrepareMenu(PATH)
 	Gui, show	  											; Displaying Progressbar
 
 	; Add Name, Icon and seperating line
-	Menu, %PATH%, Add, % ScriptName " vers. " Version, About									; Name
-	Menu, %PATH%, Icon,% ScriptName " vers. " Version, %A_ScriptDir%\Icon\Minerva-logo.png 		; Logo
+	Menu, %PATH%, Add, % ScriptName " ver. " Version, About									; Name
+	Menu, %PATH%, Icon,% ScriptName " ver. " Version, %A_ScriptDir%\Icon\Minerva-logo.png 		; Logo
 	Menu, %PATH%, Add, 																			; seperating 
 		
 	; Add all custom items using algorithm 
 	LoopOverFolder(Path)
 
-	; Add Admin Panel
 	Sleep, 200
-	Menu, %PATH%, Add, 													; seperating line 
+	Menu, %PATH%, Add, 	; seperating line 
+	; PowerToys
+	enPowerToys := initPowerToys(General_PowerToys)
+	if ( enPowerToys = 1 ){
+		callPT_AOT := Func("sendPowerToysKey").Bind("AlwaysOnTop")
+		callPT_CP := Func("sendPowerToysKey").Bind("ColorPicker")
+		callPT_FZ := Func("sendPowerToysKey").Bind("FancyZones")
+		callPT_MT := Func("sendPowerToysKey").Bind("Measure Tool")
+		callPT_OCR := Func("sendPowerToysKey").Bind("TextExtractor")
+		Menu, %PATH%"\PowerToys", Add, Always On Top, % callPT_AOT
+		Menu, %PATH%"\PowerToys", Add, Color Picker, % callPT_CP
+		Menu, %PATH%"\PowerToys", Add, Fancy Zones, % callPT_FZ
+		Menu, %PATH%"\PowerToys", Add, Screen Ruler, % callPT_MT
+		Menu, %PATH%"\PowerToys", Add, Text Extractor, % callPT_OCR
+
+		Menu, %PATH%, Add, PowerToys, :%PATH%"\PowerToys"
+		Menu, %PATH%, Icon, PowerToys, %A_ScriptDir%\Icon\PowerToys-logo.png 
+	}
+
+	; Add Admin Panel
 	Menu, %PATH%"\Admin", Add, &1 Restart, ReloadProgram				; Add Reload option
 	Menu, %PATH%"\Admin", Add, &2 Exit, ExitApp							; Add Exit option
 	Menu, %PATH%"\Admin", Add, &3 Go to Parent Folder, GoToRootFolder	; Open script folder
@@ -146,6 +178,7 @@ LoopOverFolder(PATH)
 		; Then add it as item to menu
 		SplitPath, element, name, dir, ext, name_no_ext, drive
 		Menu, %dir%, Add, %name%, :%element%
+		Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 5
 		
 		; Iterate loading GUI progress
 		FoundItem("Folder")
@@ -158,6 +191,20 @@ LoopOverFolder(PATH)
 		SplitPath, element, name, dir, ext, name_no_ext, drive
 		Menu, %dir%, Add, %name%, MenuEventHandler
 		
+		switch ext{
+			case "ahk":
+				Menu, %dir%, Icon, %name%, %A_ScriptDir%\Icon\ahk-logo.jpg
+
+			case "bat":
+				Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 3
+				
+			case "exe":
+				Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 3
+
+			default:
+				Menu, %dir%, Icon, %name%, C:\Windows\syswow64\SHELL32.dll , 1
+		}
+		
 		; Iterate GUI loading
 		FoundItem("File")
 	}
@@ -165,24 +212,18 @@ LoopOverFolder(PATH)
 
 
 ;-----------------------------------------------| HOTKEYS |----------------------------------------------;
-
 ; Bring up Minerva Menu
-Ctrl & RShift::
-
-WinGet, active_proc, ProcessName, A
-Try{
-  Menu, %A_ScriptDir%\CustomMenuFiles, Check, %active_proc%
+;Ctrl & RShift::
+showMinervaMenu(){
+	WinGet, active_proc, ProcessName, A
+	Try{
+		Menu, %A_ScriptDir%\CustomMenuFiles, Check, %active_proc%
+	}
+	Menu, %A_ScriptDir%\CustomMenuFiles, show
+	Try{
+		Menu, %A_ScriptDir%\CustomMenuFiles, UnCheck, %active_proc%
+	}
 }
-Menu, %A_ScriptDir%\CustomMenuFiles, show
-Try{
-  Menu, %A_ScriptDir%\CustomMenuFiles, UnCheck, %active_proc%
-}
-return
-
-; Reload program if Graphics for whatever reason does not work
-RShift & Insert::
-	Reload
-return
 
 
 ;-----------------------------------------------| LABELS |-----------------------------------------------#;
@@ -260,82 +301,6 @@ DeleteGraphics:
 }
 
 
-;----------------------------------------------| FUNCTIONS |---------------------------------------------;
-; ---- Handlers ----
-
-; Case not known; try to open the file
-Handler_Default(PATH)
-{
-	Handler_LaunchProgram(PATH)
-}
-
-; contents of .txt should be copied to clipboard and pasted. This is fast.
-Handler_txt(PATH)
-{
-	FileRead, Clipboard, %PATH%
-	
-	; Gets amount of words (spaces) in file just pasted
-	GetWordCount()						
-	Sleep, 50
-	
-	; Adds Info to file
-	AddAmountFile(A_ThisMenuItem, TotalWords)
-	Sleep, 50
-	
-	; Paste content of clipboard
-	Send, ^v
-}
-
-; If program is executable, simply launch it
-Handler_LaunchProgram(FilePath)
-{
-	run, %FilePath%
-}
-
-; .rtf files should be opened with a ComObject, that silently opens the file and copies the formatted text. Then paste
-Handler_RTF(FilePath)
-{
-	; Clears clipboard. Syntax looks werid, but it is right.
-	Clipboard =                     
-	Sleep, 200
-	
-	try{
-		; Load contents of file into memory
-		oDoc := ComObjGet(FilePath)
-		Sleep, 250
-		
-		; Copy contents of file into clipboard
-		oDoc.Range.FormattedText.Copy
-		Sleep, 250
-		
-		; Wait up to two seconds for content to appear on the clipboard
-		ClipWait, 2
-		if ErrorLevel
-		{
-			MsgBox, The attempt to copy text onto the clipboard failed.
-			return
-		}
-		
-		; File is no longer needed, close it
-		oDoc.Close(0)
-		Sleep, 250
-		
-		; Gets amount of words (spaces) in file just pasted
-		GetWordCount()						
-		Sleep, 50
-		
-		; Add amount words to the AmountFile
-		AddAmountFile(A_ThisMenuItem, TotalWords)
-		Sleep, 50
-		
-		; Then Paste 
-		Send, ^v
-		Sleep, 50
-	}
-	catch ex{
-
-	}
-}
 
 ; ---- Other Functions ----
 ; Amountfile is a .csv that the user can use to see how much info was saved. 
@@ -420,15 +385,5 @@ GoToCustomFolder()
 ; Launch Github repo
 About()
 {
-	run, https://github.com/jikkelsen/Minerva
-}
-
-; Attemps to start all other files in the specified path.
-RunOtherScripts(PATH)
-{
-	Loop, Files, %PATH%\* , F
-	{
-		;~ MsgBox, % "Including:`n" A_LoopFilePath
-		run, %A_LoopFilePath%
-	}
+	run, % GitHub
 }
