@@ -110,4 +110,3 @@ Any additional scripts, programs and other expecutable files in `./IncludeOtherS
 ## TODO
 
 - Performance optimize
-- Allow for `.docx` files in input
