@@ -120,7 +120,7 @@ LoopOverFolder(PATH)
 		VALUE := FileExist(A_LoopFilePath)
 		
 		; Current item is a directory
-		if (VALUE = "D")
+		if (VALUE = "D" or VALUE="AD")
 		{
 			;~ MsgBox, % "Pushing to folders`n" A_LoopFilePath
 			FolderArray.Push(A_LoopFilePath)
@@ -168,11 +168,19 @@ LoopOverFolder(PATH)
 
 ; Bring up Minerva Menu
 Ctrl & RShift::
+
+WinGet, active_proc, ProcessName, A
+Try{
+  Menu, %A_ScriptDir%\CustomMenuFiles, Check, %active_proc%
+}
 Menu, %A_ScriptDir%\CustomMenuFiles, show
+Try{
+  Menu, %A_ScriptDir%\CustomMenuFiles, UnCheck, %active_proc%
+}
 return
 
 ; Reload program if Graphics for whatever reason does not work
-LShift & Delete::
+RShift & Insert::
 	Reload
 return
 
@@ -291,37 +299,42 @@ Handler_RTF(FilePath)
 	Clipboard =                     
 	Sleep, 200
 	
-	; Load contents of file into memory
-	oDoc := ComObjGet(FilePath)
-	Sleep, 250
-	
-	; Copy contents of file into clipboard
-	oDoc.Range.FormattedText.Copy
-	Sleep, 250
-	
-	; Wait up to two seconds for content to appear on the clipboard
-	ClipWait, 2
-	if ErrorLevel
-	{
-		MsgBox, The attempt to copy text onto the clipboard failed.
-		return
+	try{
+		; Load contents of file into memory
+		oDoc := ComObjGet(FilePath)
+		Sleep, 250
+		
+		; Copy contents of file into clipboard
+		oDoc.Range.FormattedText.Copy
+		Sleep, 250
+		
+		; Wait up to two seconds for content to appear on the clipboard
+		ClipWait, 2
+		if ErrorLevel
+		{
+			MsgBox, The attempt to copy text onto the clipboard failed.
+			return
+		}
+		
+		; File is no longer needed, close it
+		oDoc.Close(0)
+		Sleep, 250
+		
+		; Gets amount of words (spaces) in file just pasted
+		GetWordCount()						
+		Sleep, 50
+		
+		; Add amount words to the AmountFile
+		AddAmountFile(A_ThisMenuItem, TotalWords)
+		Sleep, 50
+		
+		; Then Paste 
+		Send, ^v
+		Sleep, 50
 	}
-	
-	; File is no longer needed, close it
-	oDoc.Close(0)
-	Sleep, 250
-	
-	; Gets amount of words (spaces) in file just pasted
-	GetWordCount()						
-	Sleep, 50
-	
-	; Add amount words to the AmountFile
-	AddAmountFile(A_ThisMenuItem, TotalWords)
-	Sleep, 50
-	
-	; Then Paste 
-	Send, ^v
-	Sleep, 50
+	catch ex{
+
+	}
 }
 
 ; ---- Other Functions ----
