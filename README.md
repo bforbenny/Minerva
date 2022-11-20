@@ -68,6 +68,3 @@ Any additional scripts, programs and other expecutable files in `./IncludeOtherS
 
 For installation and configuration procedure, refer to [wiki](../../wiki/)
 
-## TODO
-
-- Performance optimize
