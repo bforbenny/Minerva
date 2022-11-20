@@ -32,7 +32,7 @@ Handler_LaunchProgram(FilePath)
 }
 
 ; .rtf files should be opened with a ComObject, that silently opens the file and copies the formatted text. Then paste
-Handler_RTF(FilePath)
+Handler_COM(FilePath)
 {
 	; Clears clipboard. Syntax looks werid, but it is right.
 	Clipboard :=                     
