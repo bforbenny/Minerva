@@ -11,8 +11,6 @@ Minerva uses a hotkey combination, `Ctrl + RightShift` to bring up a GUI menu, f
 
 The GUI menu will be autopopulated with text and folders from the folder that Minerva lives in.
 
-
-
 ## Usage
 
 By default, `Crtl + RightShift` brings up the Minerva menu. From here, navigate to the desired folder, and choose the text you wish to insert.
@@ -70,9 +68,6 @@ Any additional scripts, programs and other expecutable files in `./IncludeOtherS
 
 For installation and configuration procedure, refer to [wiki](../../wiki/)
 
-
 ## TODO
 
 - Performance optimize
-- Auto-Update (setting + downloader) Minerva
-

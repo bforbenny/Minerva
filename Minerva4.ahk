@@ -1,11 +1,5 @@
 ﻿#SingleInstance Force
 /*
-    __  __  _                                   _  _     ___  
-   |  \/  |(_)                                 | || |   / _ \ 
-   | \  / | _  _ __    ___  _ __ __   __ __ _  | || |_ | | | |
-   | |\/| || || '_ \  / _ \| '__|\ \ / // _` | |__   _|| | | |
-   | |  | || || | | ||  __/| |    \ V /| (_| |    | | _| |_| |
-   |_|  |_||_||_| |_| \___||_|     \_/  \__,_|    |_|(_)\___/ 
 
    Name ...........: Minerva
    Description ....: Will generate a context menu from which to insert text, launch shortcuts and much more
@@ -19,7 +13,7 @@
 ;----------------------------------------------| VARIABLES |---------------------------------------------;
 FileEncoding, UTF-8
 global ScriptName  := StrReplace(A_ScriptName, ".ahk")
-global Version     := "4.0.0"
+global Version     := "4.0.2"
 global GitHub      := "https://github.com/bforbenny/Minerva"
 global items	   := 0
 global MyProgress  := 0
@@ -36,7 +30,6 @@ global ignoreFiles := ""
 #Include, includes\Minerva-Handlers.ahk
 #Include, includes\Minerva-Statistics.ahk
 
-
 ; Read settings.ini file
 ReadIni(settingsINI)
 
@@ -44,11 +37,16 @@ setUpHotkey(HotKeys_OpenMinervaMenu, "showMinervaMenu", "%settingsINI% [HotKeys]
 setUpHotkey(HotKeys_ReloadProgram,   "ReloadProgram",   "%settingsINI% [HotKeys]ReloadProgram")
 ignoreFiles := General_IgnoreFiles
 
+; Check Update
+if General_CheckUpdate
+	CheckUpdate()
+
 ; Change tray icon from default
 Menu, Tray, Icon, %A_ScriptDir%\icon\icon.ico
 
 ; Get amount of items in folder and prepare the menu
-FindAmountItems()	
+global items = getItemCount()
+
 PrepareMenu(A_ScriptDir "\CustomMenuFiles") 
 
 ; Run other scripts in the "IncludeOtherScripts" folder
@@ -106,7 +104,7 @@ PrepareMenu(PATH)
 	; Add all custom items using algorithm 
 	LoopOverFolder(Path)
 
-	Sleep, 200
+	; Sleep, 200
 	Menu, %PATH%, Add, 	; seperating line 
 	; PowerToys
 	enPowerToys := initPowerToys(General_PowerToys)
@@ -116,6 +114,7 @@ PrepareMenu(PATH)
 		callPT_FZ := Func("sendPowerToysKey").Bind("FancyZones")
 		callPT_MT := Func("sendPowerToysKey").Bind("Measure Tool")
 		callPT_OCR := Func("sendPowerToysKey").Bind("TextExtractor")
+
 		Menu, %PATH%"\PowerToys", Add, Always On Top, % callPT_AOT
 		Menu, %PATH%"\PowerToys", Add, Color Picker, % callPT_CP
 		Menu, %PATH%"\PowerToys", Add, Fancy Zones, % callPT_FZ
@@ -131,6 +130,9 @@ PrepareMenu(PATH)
 	Menu, %PATH%"\Admin", Add, &2 Exit, ExitApp							; Add Exit option
 	Menu, %PATH%"\Admin", Add, &3 Go to Parent Folder, GoToRootFolder	; Open script folder
 	Menu, %PATH%"\Admin", Add, &4 Add Custom Item, GoToCustomFolder		; Open custom folder
+	Menu, %PATH%"\Admin", Add, 
+	Menu, %PATH%"\Admin", Add, Check for Update, CheckUpdate		; Open custom folder
+
 	Menu, %PATH%, Add, &0 Admin, :%PATH%"\Admin"						; Adds Admin section
 
 	; Loadingbar GUI is no longer needed, remove it from memory
@@ -311,12 +313,16 @@ DeleteGraphics:
 
 
 ; Recursively 
-FindAmountItems()
+getItemCount()
 {
+	local itemCount = 0
+
 	Loop, Files, %A_ScriptDir%\*, FR
 	{
-		global items := items+ 1
+		itemCount += 1
 	} 
+
+	return itemCount
 }
 
 ; Iterate step of the GUI process bar by one
@@ -361,4 +367,20 @@ GoToCustomFolder()
 About()
 {
 	run, % GitHub
+}
+
+CheckUpdate(){
+	UrlDownloadToFile, %GitHub%/releases, %TEMP%\releases.html
+	FileRead, releasehtml, %TEMP%\releases.html
+
+	RegExMatch(releasehtml, "/bforbenny/Minerva/releases/tag/v.+?.*>Minerva v\K[\d.]+", GHversion)
+
+	if GHVersion > %Version%
+	{
+	   MsgBox, Update v %GHVersion% available (installed v %Version%).
+	   ifMsgBox OK
+	   {
+			About()
+	   }
+	}
 }
