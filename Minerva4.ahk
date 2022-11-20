@@ -257,8 +257,8 @@ MenuEventHandler:
 	; Run item with appropriate handler
 	Switch FileExtension
 	{
-		case "rtf" : Handler_RTF(FilePath)
-		case "docx": Handler_RTF(FilePath)
+		case "rtf" : Handler_COM(FilePath)
+		case "docx": Handler_COM(FilePath)
 		case "bat" : Handler_LaunchProgram(FilePath)
 		case "txt" : Handler_txt(FilePath)
 		case "lnk" : Handler_LaunchProgram(FilePath)
