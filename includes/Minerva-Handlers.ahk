@@ -35,7 +35,7 @@ Handler_LaunchProgram(FilePath)
 Handler_RTF(FilePath)
 {
 	; Clears clipboard. Syntax looks werid, but it is right.
-	Clipboard =                     
+	Clipboard :=                     
 	; Sleep, 200
 	
 	try{

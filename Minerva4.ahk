@@ -15,10 +15,9 @@ FileEncoding, UTF-8
 global ScriptName  := StrReplace(A_ScriptName, ".ahk")
 global Version     := "4.0.2"
 global GitHub      := "https://github.com/bforbenny/Minerva"
-global items	   := 0
+global FileCount   := 0
 global MyProgress  := 0
 global TotalWords  := 0
-global enPowerToys := 0
 global settingsINI := "settings.ini"
 global ignoreFiles := ""
 
@@ -45,7 +44,7 @@ if General_CheckUpdate
 Menu, Tray, Icon, %A_ScriptDir%\icon\icon.ico
 
 ; Get amount of items in folder and prepare the menu
-global items = getItemCount()
+global FileCount := getItemCount()
 
 PrepareMenu(A_ScriptDir "\CustomMenuFiles") 
 
@@ -93,7 +92,7 @@ PrepareMenu(PATH)
 		
 	; GUI loading/progress bar
 	Gui, new, +ToolWindow, % ScriptName " is Loading"		; Adding title to progressbar
-	Gui, add, Progress, w200 vMyProgress range1-%items%, 0	; Adding progressbar
+	Gui, add, Progress, w200 vMyProgress range1-%FileCount%, 0	; Adding progressbar
 	Gui, show	  											; Displaying Progressbar
 
 	; Add Name, Icon and seperating line
@@ -107,8 +106,7 @@ PrepareMenu(PATH)
 	; Sleep, 200
 	Menu, %PATH%, Add, 	; seperating line 
 	; PowerToys
-	enPowerToys := initPowerToys(General_PowerToys)
-	if ( enPowerToys = 1 ){
+	if ( initPowerToys(General_PowerToys) ){
 		callPT_AOT := Func("sendPowerToysKey").Bind("AlwaysOnTop")
 		callPT_CP := Func("sendPowerToysKey").Bind("ColorPicker")
 		callPT_FZ := Func("sendPowerToysKey").Bind("FancyZones")
@@ -315,7 +313,7 @@ DeleteGraphics:
 ; Recursively 
 getItemCount()
 {
-	local itemCount = 0
+	local itemCount := 0
 
 	Loop, Files, %A_ScriptDir%\*, FR
 	{

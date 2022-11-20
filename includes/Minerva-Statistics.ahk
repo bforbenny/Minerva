@@ -34,6 +34,6 @@ GetWordCount()
 	Global TotalWords := 0
 	Loop, parse, clipboard, %A_Space%,
 	{
-		TotalWords = %A_Index%
+		TotalWords := %A_Index%
 	}
 }

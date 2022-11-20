@@ -11,8 +11,6 @@
 
 ; Initial Variables
 
-hk_AlwaysOnTop = "abv"
-
 initPowerToys( configured = 0){
     if !ProcessExist("PowerToys.exe"){
         return 0
@@ -64,15 +62,15 @@ getPowerToysKey(FeatureName){
     Shortcut := ""
     if IsObject(Ptr){
         if Ptr.win == "true"
-            Shortcut = % Shortcut . "#"
+            Shortcut := % Shortcut . "#"
         if Ptr.ctrl == "true"
-            Shortcut = % Shortcut . "^"
+            Shortcut := % Shortcut . "^"
         if Ptr.alt == "true"
-            Shortcut = % Shortcut . "!"
+            Shortcut := % Shortcut . "!"
         if Ptr.shift == "true"
-            Shortcut = % Shortcut . "+"
+            Shortcut := % Shortcut . "+"
 
-        Shortcut = % Shortcut . Chr(Ptr.code)
+        Shortcut := % Shortcut . Chr(Ptr.code)
     }
 
     Return Shortcut

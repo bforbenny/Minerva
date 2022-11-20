@@ -1,9 +1,9 @@
 ﻿
 ; https://autohotkey.com/board/topic/33506-read-ini-file-in-one-go/
 
-ReadIni( filename = 0 )
+ReadIni( filename := 0 )
 ; Read a whole .ini file and creates variables like this:
-; %Section%%Key% = %value%
+; %Section%_%Key% := %value%
 {
 Local s, c, p, key, k
 
@@ -33,9 +33,9 @@ setUpHotkey(hk, handler, settingPaths)
 ; Set-up key-bindings dynamically
 ; If key is bound previously, an error will be thrown
 ;
-; hk = %header%_%settings%
-; handler = function_name(){...}
-; settingPaths = error message (e.g. settings.ini [Hotkeys]Shortcut)
+; hk := %header%_%settings%
+; handler := function_name(){...}
+; settingPaths := error message (e.g. settings.ini [Hotkeys]Shortcut)
 {
     if hk == ""
       return
