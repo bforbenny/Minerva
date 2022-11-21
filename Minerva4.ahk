@@ -96,8 +96,8 @@ PrepareMenu(PATH)
 	Gui, show	  											; Displaying Progressbar
 
 	; Add Name, Icon and seperating line
-	Menu, %PATH%, Add, % ScriptName " ver. " Version, About									; Name
-	Menu, %PATH%, Icon,% ScriptName " ver. " Version, %A_ScriptDir%\Icon\Minerva-logo.png 		; Logo
+	Menu, %PATH%, Add, % ScriptName " v " Version, About									; Name
+	Menu, %PATH%, Icon,% ScriptName " v " Version, %A_ScriptDir%\Icon\Minerva-logo.png 		; Logo
 	Menu, %PATH%, Add, 																			; seperating 
 		
 	; Add all custom items using algorithm 
