@@ -32,7 +32,8 @@ ProcessExist(Name){
 }
 
 getPowerToysKey(FeatureName){
-    FileRead jsonSettings, %A_AppData%\..\Local\Microsoft\PowerToys\%FeatureName%\settings.json
+    FileRead jsonSettings, %LocalAppData%\Microsoft\PowerToys\%FeatureName%\settings.json
+
     settingsData := Jxon_Load(jsonSettings)
 
     ; hotkey setting path
