@@ -363,7 +363,7 @@ GoToCustomFolder()
 
 GoToShareXFolder()
 {
-	ShareX := get_ShareXFolder()
+	ShareX := minerva_ShareX()
 	run, explore %ShareX%
 }
 ; Launch Github repo

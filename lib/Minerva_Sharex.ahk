@@ -5,20 +5,21 @@
 ; Available functions:
 ; - Open ShareX screenshot folder
 
-global folder_ShareX := A_MyDocuments . "\ShareX"
-global settings_ShareX := folder_ShareX . "\ApplicationConfig.json"
-global personal_ShareX := folder_ShareX . "\PersonalPath.cfg"
-global folder_ShareXScreenshot := ""
-
 minerva_ShareX( configured = 0){
+    if configured = 0
+        return
+        
     if !ProcessExist("ShareX.exe"){
-        return 0
+        return
     }
 
-    return configured
-}
+    
+    folder_ShareX := A_MyDocuments . "\ShareX"
+    settings_ShareX := folder_ShareX . "\ApplicationConfig.json"
+    personal_ShareX := folder_ShareX . "\PersonalPath.cfg"
+    folder_ShareXScreenshot := ""
 
-get_ShareXFolder(){
+
     ; Using ShareX personal folder
     FileRead, personal_ShareX, %folder_ShareX%
     
@@ -38,6 +39,3 @@ get_ShareXFolder(){
 
     return folder_ShareXScreenshot
 }
-
-;--------------------------------------
-; Internal functions
