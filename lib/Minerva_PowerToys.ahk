@@ -11,7 +11,7 @@
 
 ; Initial Variables
 
-initPowerToys( configured = 0){
+minerva_PowerToys( configured = 0){
     if !ProcessExist("PowerToys.exe"){
         return 0
     }

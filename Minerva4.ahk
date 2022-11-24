@@ -22,15 +22,7 @@ global settingsINI := "settings.ini"
 global ignoreFiles := ""
 
 ; comment if Gdip.ahk is in your standard library
-#Include, includes\
-#Include, Minerva-General.ahk
-#Include, Gdip.ahk 			
-#Include, read-ini.ahk	
-#Include, JXON.ahk
-#Include, Minerva-PowerToys.ahk
-#Include, Minerva-Handlers.ahk
-#Include, Minerva-Statistics.ahk
-#Include, Minerva-ShareX.ahk
+#Include, lib\Minerva-Handlers.ahk
 
 ; Read settings.ini file
 ReadIni(settingsINI)
@@ -109,7 +101,7 @@ PrepareMenu(PATH)
 	; Sleep, 200
 	Menu, %PATH%, Add, 	; seperating line 
 	; PowerToys
-	if ( initPowerToys(General_PowerToys) ){
+	if ( minerva_PowerToys(General_PowerToys) ){
 		callPT_AOT := Func("sendPowerToysKey").Bind("AlwaysOnTop")
 		callPT_CP := Func("sendPowerToysKey").Bind("ColorPicker")
 		callPT_FZ := Func("sendPowerToysKey").Bind("FancyZones")
@@ -126,7 +118,7 @@ PrepareMenu(PATH)
 		Menu, %PATH%, Icon, PowerToys, %A_ScriptDir%\Icon\PowerToys-logo.png 
 	}
 
-	if ( initShareX(General_ShareX) ){
+	if ( minerva_ShareX(General_ShareX) ){
 		Menu, %PATH%, Add, ShareX Folder, GoToShareXFolder
 		Menu, %PATH%, Icon, ShareX Folder, %A_ScriptDir%\Icon\ShareX-logo.png 
 	}

@@ -10,7 +10,7 @@ global settings_ShareX := folder_ShareX . "\ApplicationConfig.json"
 global personal_ShareX := folder_ShareX . "\PersonalPath.cfg"
 global folder_ShareXScreenshot := ""
 
-initShareX( configured = 0){
+minerva_ShareX( configured = 0){
     if !ProcessExist("ShareX.exe"){
         return 0
     }

@@ -1,10 +1,12 @@
 
 ; ---- Other Functions ----
 ; Amountfile is a .csv that the user can use to see how much info was saved. 
-AddAmountFile(FileName, WordCount)
+minerva_Statistics(FileName, WordCount)
 {
 	if General_CollectStatistics = 0
 		return
+
+	GetWordCount()	
 
 	; Average Typing speed is 40 wpm pr. https://www.typingpal.com/en/typing-test
 	MinutesSaved := WordCount / 40
@@ -28,9 +30,6 @@ AddAmountFile(FileName, WordCount)
 ; Gets the amount of words on the clipboard
 GetWordCount()
 {
-	if General_CollectStatistics = 0
-		return 0
-
 	Global TotalWords := 0
 	Loop, parse, clipboard, %A_Space%,
 	{

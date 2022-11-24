@@ -14,11 +14,11 @@ Handler_txt(PATH)
 	FileRead, Clipboard, %PATH%
 	
 	; Gets amount of words (spaces) in file just pasted
-	GetWordCount()						
+	; GetWordCount()						
 	; Sleep, 50
 	
 	; Adds Info to file
-	AddAmountFile(A_ThisMenuItem, TotalWords)
+	minerva_Statistics(A_ThisMenuItem, TotalWords)
 	; Sleep, 50
 	
 	; Paste content of clipboard
@@ -60,11 +60,11 @@ Handler_COM(FilePath)
 		; Sleep, 250
 		
 		; Gets amount of words (spaces) in file just pasted
-		GetWordCount()						
+		; GetWordCount()						
 		; Sleep, 50
 		
 		; Add amount words to the AmountFile
-		AddAmountFile(A_ThisMenuItem, TotalWords)
+		minerva_Statistics(A_ThisMenuItem, TotalWords)
 		; Sleep, 50
 		
 		; Then Paste 
