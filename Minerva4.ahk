@@ -13,7 +13,7 @@
 ;----------------------------------------------| VARIABLES |---------------------------------------------;
 FileEncoding, UTF-8
 global ScriptName  := StrReplace(A_ScriptName, ".ahk")
-global Version     := "4.0.2"
+global Version     := "4.0.3"
 global GitHub      := "https://github.com/bforbenny/Minerva"
 global FileCount   := 0
 global MyProgress  := 0
@@ -22,12 +22,15 @@ global settingsINI := "settings.ini"
 global ignoreFiles := ""
 
 ; comment if Gdip.ahk is in your standard library
-#Include, includes\Gdip.ahk 			
-#Include, includes\read-ini.ahk	
-#Include, includes\JXON.ahk
-#Include, includes\Minerva-PowerToys.ahk
-#Include, includes\Minerva-Handlers.ahk
-#Include, includes\Minerva-Statistics.ahk
+#Include, includes\
+#Include, Minerva-General.ahk
+#Include, Gdip.ahk 			
+#Include, read-ini.ahk	
+#Include, JXON.ahk
+#Include, Minerva-PowerToys.ahk
+#Include, Minerva-Handlers.ahk
+#Include, Minerva-Statistics.ahk
+#Include, Minerva-ShareX.ahk
 
 ; Read settings.ini file
 ReadIni(settingsINI)
@@ -121,6 +124,11 @@ PrepareMenu(PATH)
 
 		Menu, %PATH%, Add, PowerToys, :%PATH%"\PowerToys"
 		Menu, %PATH%, Icon, PowerToys, %A_ScriptDir%\Icon\PowerToys-logo.png 
+	}
+
+	if ( initShareX(General_ShareX) ){
+		Menu, %PATH%, Add, ShareX Folder, GoToShareXFolder
+		Menu, %PATH%, Icon, ShareX Folder, %A_ScriptDir%\Icon\ShareX-logo.png 
 	}
 
 	; Add Admin Panel
@@ -361,6 +369,11 @@ GoToCustomFolder()
 	run, explore %A_ScriptDir%\CustomMenuFiles
 }
 
+GoToShareXFolder()
+{
+	ShareX := get_ShareXFolder()
+	run, explore %ShareX%
+}
 ; Launch Github repo
 About()
 {

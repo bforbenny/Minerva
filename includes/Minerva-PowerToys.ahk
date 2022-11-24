@@ -26,10 +26,6 @@ sendPowerToysKey(FeatureName){
 
 ;--------------------------------------
 ; Internal functions
-ProcessExist(Name){
-	Process,Exist,%Name%
-	return Errorlevel
-}
 
 getPowerToysKey(FeatureName){
     FileRead jsonSettings, %LocalAppData%\Microsoft\PowerToys\%FeatureName%\settings.json
